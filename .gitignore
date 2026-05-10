@@ -1,0 +1,5 @@
+gapy_saves/
+build/
+frame_*.png
+__pycache__/
+experiments/gatmp*.argos
