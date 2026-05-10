@@ -13,12 +13,12 @@ MAC_LOOP_LIB = "build/loop_functions/libiAnt_loop_functions.dylib"
     
 PARAMETER_LIMITS = {
     "RateOfLayingPheromone": (0, 20),
-    "RateOfPheromoneDecay": (0, 1), #qilu 04/25 the sampled maximum 0.99 in 5000. The mean is 0.1 03/27/2016 exponential distribtion
+    "RateOfPheromoneDecay": (0, 50),
     "ProbabilityOfSwitchingToSearching": (0, 1),
     "RateOfSiteFidelity": (0, 20),
-    "RateOfInformedSearchDecay": (0, 2), #qilu 04/25 the sampled maximum is around 2.0,  03/27/2016 exponential distribtion
-    "ProbabilityOfReturningToNest": (0, 0.05),
-    "UninformedSearchVariation": (0, 90)
+    "RateOfInformedSearchDecay": (0, 25),
+    "ProbabilityOfReturningToNest": (0, 1),
+    "UninformedSearchVariation": (0, 4*np.pi)
 }
 
 def load_xml_default(xml_file):
@@ -39,10 +39,9 @@ def load_xml_default(xml_file):
 def default_argos_xml(xml_file, time, system="linux"):
     ARGOS_XML_DEFAULT= load_xml_default(xml_file) 
     xml = etree.fromstring(ARGOS_XML_DEFAULT)
-    #xml.find("arena").find("distribute").find(
-    #"entity").attrib["quantity"] = str(robots)
-    #exp_att = xml.find("framework").find("experiment").attrib
-    #exp_att.update({"length": str(time)})
+    # Set the simulation time in the settings
+    settings = xml.find("loop_functions").find("settings")
+    settings.attrib["MaxSimTimeInSeconds"] = str(time)
 
     if system == "linux":
         return xml
@@ -61,9 +60,11 @@ def uniform_rand_argos_xml(xml_file, robots, time, system="linux"):
     parameters = {}
     for key in PARAMETER_LIMITS:
         if key == "RateOfPheromoneDecay":
-            parameters[key] = str(np.random.exponential(0.1))
+            parameters[key] = str(np.random.exponential(10))
         elif key == "RateOfInformedSearchDecay":
-            parameters[key] = str(np.random.exponential(0.2))
+            parameters[key] = str(np.random.exponential(5))
+        elif key == "UninformedSearchVariation":
+            parameters[key] = str(np.random.uniform(0, 4*np.pi))
         else:
             parameters[key] = str(np.random.uniform(PARAMETER_LIMITS[key][0], PARAMETER_LIMITS[key][1]))
     set_parameters(xml, parameters)    

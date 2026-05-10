@@ -1,10 +1,10 @@
 XMLBlock settings
 Files Random_CPFA_r16_tag256_10by10
-FoodDistribution 0
-MaxSimTimeInSeconds 1800
+FoodDistribution 2
+MaxSimTimeInSeconds 720
 FoodItemCount 256
 PowerlawFoodUnitCount 256
 NumberOfClusters 4
 ClusterWidthX 8
 ClusterWidthY 8
-NestRadius 0.5
+NestRadius 0.15
