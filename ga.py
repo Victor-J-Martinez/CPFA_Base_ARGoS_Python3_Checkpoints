@@ -43,7 +43,7 @@ class ArgosRunException(Exception):
 class iAntGA(object):
     def __init__(self, xml_file, pop_size=50, gens=20, elites=3,
                  mut_rate=0.1, robots=20, tags=1024, length=3600,
-                 system="linux", tests_per_gen=10, terminateFlag=0, resume_file=None):
+                 system="linux", tests_per_gen=10, terminateFlag=0, resume_file=None, run_id=None):
 
         self.xml_file = xml_file #qilu 03/26/2016
         self.system = system
@@ -54,6 +54,7 @@ class iAntGA(object):
         self.current_gen = 0
         self.robots = robots #qilu 03/26/2016
         self.tags = tags
+        self.run_id = run_id
         # Initialize population
         self.population_data=[]
         self.population = []
@@ -86,6 +87,8 @@ class iAntGA(object):
         #dirstring = str(self.starttime) + "_e_" + str(elites) + "_p_" + str(pop_size) + "_r_" + str(robots) + "_t_" + \
         dirstring = XML_FILE_NAME +"_" + str(self.starttime) + "_e_" + str(elites) + "_p_" + str(pop_size) + "_r_" + \
             str(robots) +"_tag_"+str(tags)+ "_t_" + str(length) + "_k_" + str(tests_per_gen)
+        if self.run_id is not None:
+            dirstring += "_run_" + str(self.run_id)
         self.save_dir = os.path.join("gapy_saves", dirstring)
         mkdir_p(self.save_dir)
         # (4/20/2026) Charles Galperin
@@ -401,6 +404,7 @@ if __name__ == "__main__":
     # (4/19/2026) Charles Galperin
     # flag added for loading checkpoint files
     parser.add_argument('-rf', '--resume_file', action='store', dest='resume_file', help='Path to a .pkl checkpoint file')
+    parser.add_argument('--run-id', action='store', dest='run_id', help='Unique identifier for this run')
     ###(C.G.)
     pop_size = 50
     gens = 100
@@ -456,6 +460,11 @@ if __name__ == "__main__":
     if args.tests_per_gen:
         tests_per_gen = args.tests_per_gen
 
+    if args.run_id:
+        run_id = args.run_id
+    else:
+        run_id = None
+
     if args.terminateFlag:
         terminateFlag = args.terminateFlag
 
@@ -483,7 +492,8 @@ if __name__ == "__main__":
                 system=system,
                 tests_per_gen=tests_per_gen,
                 terminateFlag = terminateFlag,
-                resume_file=resume_file) # (4/19/2026) Charles Galperin: checkpoint option added
+                resume_file=resume_file, # (4/19/2026) Charles Galperin: checkpoint option added
+                run_id=run_id) 
     start = time.time()
     ga.run_ga()
     stop = time.time()
