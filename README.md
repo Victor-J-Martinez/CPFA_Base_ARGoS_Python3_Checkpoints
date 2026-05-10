@@ -1,3 +1,13 @@
+#(05/10/2026)
+* --run-id argment added. Used for GNU parallel command, to run individual training on multiple cores/threads
+Example parallel command to run 10:
+```
+parallel -j 10 python3 ga.py -f Random_CPFA_r24_tag256_10by10.xml -p 50 -g 150 -k 10 --run-id {#} ::: {1..10}
+```
+Example parallel command to resume 10 runs from their respective checkpoints:
+```
+parallel python3 ga.py -f Random_CPFA_r24_tag256_10by10.xml -p 50 -g 150 -k 10 --run-id {} -rf '$(ls -v gapy_saves/*_run_{}/checkpoints/*.pkl | tail -1)' ::: {1..10}
+```
 #(4/20/2026)  
 * Genetic Algorithm 'ga.py' now functional in Python3.
 
